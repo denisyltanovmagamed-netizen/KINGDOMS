@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://world/resources/resource_node.tscn" id="2_resource"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(200, 200)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial_ground"]
+albedo_color = Color(0.18, 0.42, 0.16, 1)
+roughness = 1.0
+
+[sub_resource type="Environment" id="Environment_world"]
+background_mode = 1
+background_color = Color(0.04, 0.05, 0.04, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.65, 0.68, 0.62, 1)
+ambient_light_energy = 0.65
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_ground")
+material_override = SubResource("StandardMaterial_ground")
+
+[node name="ResourceNode" parent="." instance=ExtResource("2_resource")]
+position = Vector3(0, 1, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-55, -30, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_world")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 35, 25)
+current = true
+
+[node name="Label" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 500.0
+offset_bottom = 60.0
+text = "KINGDOMS — WASD • Колесо: масштаб • MMB: поворот • ЛКМ: выбрать ресурс"
+theme_override_font_sizes/font_size = 20
