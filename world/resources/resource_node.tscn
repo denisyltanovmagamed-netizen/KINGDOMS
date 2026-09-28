@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/resource_node.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial_resource"]
+albedo_color = Color(0.55, 0.34, 0.12, 1)
+roughness = 0.82
+
+[sub_resource type="BoxMesh" id="BoxMesh_resource"]
+material = SubResource("StandardMaterial_resource")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape_resource"]
+size = Vector3(2, 2, 2)
+
+[node name="ResourceNode" type="Area3D"]
+script = ExtResource("1_script")
+
+[node name="Visual" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_resource")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape_resource")
