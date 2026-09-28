@@ -60,14 +60,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			rotating = event.pressed
 			last_mouse_position = event.position
 
+		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			select_resource(event.position)
+
 	elif event is InputEventMouseMotion and rotating:
 		var mouse_delta: Vector2 = event.position - last_mouse_position
 		last_mouse_position = event.position
 		camera.rotate_y(-mouse_delta.x * ROTATION_SPEED * 0.01)
-
-	elif event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			select_resource(event.position)
 
 func select_resource(screen_position: Vector2) -> void:
 	var from := camera.project_ray_origin(screen_position)
