@@ -43,27 +43,36 @@ func limit_camera_position() -> void:
 	camera.position.z = clamp(camera.position.z, -MAP_SIZE, MAP_SIZE)
 	camera.position.y = clamp(camera.position.y, MIN_HEIGHT, MAX_HEIGHT)
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if camera == null:
 		return
 
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			camera.position.y -= ZOOM_SPEED
 			limit_camera_position()
+			return
 
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			camera.position.y += ZOOM_SPEED
 			limit_camera_position()
+			return
 
-		elif event.button_index == MOUSE_BUTTON_MIDDLE:
-			rotating = event.pressed
+		if event.button_index == MOUSE_BUTTON_MIDDLE:
+			rotating = true
 			last_mouse_position = event.position
+			return
 
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			select_resource(event.position)
+			return
 
-	elif event is InputEventMouseMotion and rotating:
+	if event is InputEventMouseButton and not event.pressed:
+		if event.button_index == MOUSE_BUTTON_MIDDLE:
+			rotating = false
+		return
+
+	if event is InputEventMouseMotion and rotating:
 		var mouse_delta: Vector2 = event.position - last_mouse_position
 		last_mouse_position = event.position
 		camera.rotate_y(-mouse_delta.x * ROTATION_SPEED * 0.01)
@@ -75,12 +84,16 @@ func select_resource(screen_position: Vector2) -> void:
 	var query := PhysicsRayQueryParameters3D.create(from, to)
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
+	query.collision_mask = 1
 
 	var result := get_world_3d().direct_space_state.intersect_ray(query)
 
 	if result.is_empty():
+		print("ЛКМ: объект не найден")
 		return
 
 	var collider = result.get("collider")
+	print("ЛКМ: найден ", collider.name if collider else "неизвестный объект")
+
 	if collider is Area3D and collider.has_method("select"):
 		collider.select()
